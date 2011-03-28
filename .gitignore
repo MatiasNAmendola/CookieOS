@@ -1,0 +1,7 @@
+build/*
+iso/
+*.o
+*.so
+*.sso
+*.iso
+*.DS_STORE
