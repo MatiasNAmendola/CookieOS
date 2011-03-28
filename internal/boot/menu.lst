@@ -1,0 +1,5 @@
+default 0
+timeout 10
+
+title CookieOS
+kernel /boot/kCookieOS
