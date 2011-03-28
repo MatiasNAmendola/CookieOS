@@ -6,12 +6,15 @@
  */
 
 #include "common.h"
-#include "monitor.h"
+#include "console.h"
 
 void kmain() {
 	
-	monitor_clear();
-	monitor_write("Testing CookieOS...");
+	console_clear();
+	
+	console_write("Running CookieOS...\n");
+	console_write("Initializing CookieOS...  ");
+	console_write("OK!\n");
 	
 }
 

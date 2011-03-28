@@ -16,28 +16,36 @@ CFLAGS=-I $(SRC_DIR)/include -Wall -Wextra -nostdlib -nostartfiles \
 LDFLAGS=-T$(INTERNAL_DIR)/link.ld
 
 all:
-	make clean
-	# Build
-	mkdir -p $(BUILD_DIR)
-	$(NASM) $(ASFLAGS) -o start.sso $(SRC_DIR)/bootstrap.s
-	$(GCC) -c $(SRC_DIR)/*.c $(CFLAGS)
-	$(LD) $(LDFLAGS) -o $(BUILD_DIR)/$(KERNEL) *.sso *.o
-
-	# Structure ISO file
-	mkdir -p $(ISO_DIR)/boot/grub
-	cp $(INTERNAL_DIR)/boot/* $(ISO_DIR)/boot/grub
-	cp $(BUILD_DIR)/$(KERNEL) $(ISO_DIR)/boot/$(KERNEL)
-
-	# Create ISO
-	mkisofs -R -b boot/grub/stage2_eltorito -no-emul-boot \
+	@echo "Now building CookieOS..."
+	@make clean
+	@mkdir -p $(BUILD_DIR)
+	@$(NASM) $(ASFLAGS) -o bootstrap.sso $(SRC_DIR)/bootstrap.s
+	@$(GCC) -c $(SRC_DIR)/*.c $(CFLAGS)
+	@$(LD) $(LDFLAGS) -o $(BUILD_DIR)/$(KERNEL) *.sso *.o
+	@echo "CookieOS successfully built!"
+	@echo ""
+	
+	@echo "Staging CookieOS ISO directory..."
+	@mkdir -p $(ISO_DIR)/boot/grub
+	@cp $(INTERNAL_DIR)/boot/* $(ISO_DIR)/boot/grub
+	@cp $(BUILD_DIR)/$(KERNEL) $(ISO_DIR)/boot/$(KERNEL)
+	
+	@echo "Creating CookieOS ISO..."
+	@echo ""
+	
+	@mkisofs -R -b boot/grub/stage2_eltorito -no-emul-boot \
 		-boot-load-size 4 -boot-info-table -o $(ISO) $(ISO_DIR)
+		
+	@echo ""
+	@echo "CookieOS ISO created!"
+	@echo "Use 'make qemu' to run CookieOS in QEMU!"
 
 qemu:
-	make all
-	qemu -cdrom $(ISO)
+	@qemu -cdrom $(ISO)
 
 clean:
-	rm -f $(BUILD_DIR)/*
-	rm -f *.o *.so *.sso
-	rm -r -f $(ISO_DIR)
-	rm -f $(ISO)
+	@rm -f $(BUILD_DIR)/*
+	@rm -f *.o *.so *.sso
+	@rm -r -f $(ISO_DIR)
+	@rm -f $(ISO)
+	
